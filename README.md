@@ -94,6 +94,8 @@ No VM in this project has a public IP. All administrative access is via Azure Ba
 | AzureFirewallSubnet | 10.0.10.0/26 | Azure Firewall (private side) |
 | AzureBastionSubnet | 10.0.11.0/26 | Azure Bastion |
 
+![All 5 subnets with NSG and route table associations](./screenshots/vnet-subnets.png.png)
+
 ### NSG Rules (custom rules only — defaults omitted)
 
 **nsg-web**
@@ -157,6 +159,8 @@ A second, related gotcha: Private Endpoints ignore their subnet's NSG by default
 - **App tier (`vm-app`):** a Flask API with three routes (`/api/health`, `GET /api/entries`, `POST /api/entries`), served by **Gunicorn** (2 worker processes) and supervised by a **systemd** unit (`app.service`, `Restart=always`) — so it survives reboots and doesn't depend on any terminal session staying open.
 - **Data tier:** the Flask app uses the `azure-identity` and `azure-storage-blob` SDKs with `DefaultAzureCredential`, which automatically authenticates using the VM's Managed Identity — no connection string or access key exists anywhere in the code or config.
 
+![Live demo — browser round-trip through Web → App → Storage](./screenshots/demo-page-entry-added.png.png)
+
 ```ini
 # /etc/systemd/system/app.service
 [Unit]
@@ -180,6 +184,8 @@ WantedBy=multi-user.target
 - **Log Analytics Workspace** (`law-mini-production`) centralizes metrics and logs from both VMs.
 - **VM Insights**, via the Azure Monitor Agent, is enabled on both `vm-web` and `vm-app`.
 - **14 alert rules** were provisioned (Azure's recommended set), covering CPU percentage, network in/out, disk IOPS, and VM availability, across both VMs.
+
+![14 alert rules across both VMs](./screenshots/alert-rules-list.png.png)
 
 ## Testing & Validation
 
@@ -220,7 +226,7 @@ Azure networking (VNets, subnets, NSGs, UDRs) · Azure Firewall & Firewall Polic
 
 ## Screenshots
 
-See [`screenshots.md`](./screenshots.md) for the full checklist and file naming convention used in the `screenshots/` folder — covering networking, security, compute, storage, monitoring, and the live application demo.
+The three shots above are a sample. See [`screenshots.md`](./screenshots.md) for the full gallery of 22 screenshots covering networking, security, firewall rules, compute, storage, monitoring, and the live application demo — captured from the live environment before the resource group was torn down.
 
 ## Cost Considerations & Teardown
 
@@ -241,4 +247,4 @@ These were considered but intentionally left out of scope for this iteration, wh
 
 ## Author
 
-Built by [Your Name] as a hands-on infrastructure learning project — designed, deployed, secured, and validated resource by resource rather than following a single tutorial end to end.
+Built by [martinsautomate](https://github.com/martinsautomate) as a hands-on infrastructure learning project — designed, deployed, secured, and validated resource by resource rather than following a single tutorial end to end.
